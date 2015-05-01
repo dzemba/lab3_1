@@ -102,4 +102,36 @@ public class BookKeeperTest {
 				assertThat(bookKeeper.issuance(invoiceRequest, taxPolicy).getItems().size(), is(0));
 			}
 		
+		
+		@Test
+		public void requestInvoiceWitZeroPosition_noCalculateTaxTwice() {
+	
+		Id id = new Id("999");
+		Money moneyy = new Money(1);
+		
+		ProductType productTypeEveryItem = ProductType.FOOD;
+		InvoiceFactory mockInvoiceFactory = mock(InvoiceFactory.class);
+		bookKeeper = new BookKeeper(mockInvoiceFactory);
+		ClientData clientData = new ClientData(id, "Test");
+		when(mockInvoiceFactory.create(clientData)).thenReturn(new Invoice(id, clientData));
+		
+		ProductData productData = new ProductData(id, moneyy,"book", productTypeEveryItem, new Date());
+		
+		RequestItem requestItem = new RequestItem(productData, 4,moneyy);
+		
+		InvoiceRequest invoiceRequest = new InvoiceRequest(clientData);
+		TaxPolicy taxPolicy = mock(TaxPolicy.class);
+					
+		
+		
+		when(taxPolicy.calculateTax(ProductType.FOOD, moneyy)).thenReturn(new Tax(moneyy, "spis"));
+	
+	
+			bookKeeper.issuance(invoiceRequest, taxPolicy);
+	
+
+			Mockito.verify(taxPolicy, Mockito.times(0)).calculateTax(
+					productTypeEveryItem, moneyy);
+		}
+		
 }
