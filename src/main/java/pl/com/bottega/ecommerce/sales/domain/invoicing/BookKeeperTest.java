@@ -82,4 +82,24 @@ public class BookKeeperTest {
 						productTypeEveryItem, moneyy);
 			}
 		
+		@Test
+			public void testWithNoPosition_shouldReturnNoPosition() {
+		
+			Id id = new Id("999");
+			Money money = new Money(1);
+			InvoiceFactory mockInvoiceFactory = mock(InvoiceFactory.class);
+			bookKeeper = new BookKeeper(mockInvoiceFactory);
+			ClientData clientData = new ClientData(id, "Test");
+			when(mockInvoiceFactory.create(clientData)).thenReturn(new Invoice(id, clientData));
+			
+			InvoiceRequest invoiceRequest = new InvoiceRequest(clientData);
+			TaxPolicy taxPolicy = mock(TaxPolicy.class);
+						
+			ProductData productData = new ProductData(id, money, "ksiazka",ProductType.FOOD, new Date());
+			
+		
+
+				assertThat(bookKeeper.issuance(invoiceRequest, taxPolicy).getItems().size(), is(0));
+			}
+		
 }
