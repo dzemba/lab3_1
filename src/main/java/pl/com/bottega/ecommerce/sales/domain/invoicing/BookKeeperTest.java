@@ -26,30 +26,35 @@ public class BookKeeperTest {
 		@Test
 		public void requestInvoiceWithOnePosition_shouldReturnInvoiceWithOnePosition() {
 	
-			
-			Id id = new Id("999");
-			Money money = new Money(1);
-			InvoiceFactory mockInvoiceFactory = mock(InvoiceFactory.class);
-			bookKeeper = new BookKeeper(mockInvoiceFactory);
-			ClientData clientData = new ClientData(id, "Test");
-			when(mockInvoiceFactory.create(clientData)).thenReturn(new Invoice(id, clientData));
-			
-			InvoiceRequest invoiceRequest = new InvoiceRequest(clientData);
-			TaxPolicy taxPolicy = mock(TaxPolicy.class);
-						
-			ProductData productData = new productDataBuilder().withPrice(1).withProductType(ProductType.FOOD).build();
-			
-			when(taxPolicy.calculateTax(ProductType.FOOD, money)).thenReturn(new Tax(money, "spis"));
-			
-			RequestItem requestItem = new RequestItem(productData, 4, money);invoiceRequest.add(requestItem);
-
-			assertThat(bookKeeper.issuance(invoiceRequest, taxPolicy).getItems().size(), is(1));
+			Id id = new Id("1");
+	 		Money money = new Money(1);
+	 		InvoiceFactory mockInvoiceFactory = mock(InvoiceFactory.class);
+	 		bookKeeper = new BookKeeper(mockInvoiceFactory);
+	 		ClientData clientData = new ClientData(id, "ksiazka");
+	 		when(mockInvoiceFactory.create(clientData)).thenReturn(
+	 				new Invoice(id, clientData));
+	 		InvoiceRequest invoiceRequest = new InvoiceRequest(clientData);
+	 		TaxPolicy taxPolicy = mock(TaxPolicy.class);
+	 		when(taxPolicy.calculateTax(ProductType.FOOD, money)).thenReturn(
+	 				new Tax(money, "opis"));
+	 		ProductData productData = new productDataBuilder().withPrice(1).withProductType(ProductType.FOOD).build();
+	
+			RequestItem requestItem = new ItemBuilder().withProductData(productData).witTotalCost(1).build();
+	 		invoiceRequest.add(requestItem);
+	 
+	 		// when
+	 		Invoice invoiceResult = bookKeeper.issuance(invoiceRequest, taxPolicy);
+	 		int result = invoiceResult.getItems().size();
+	 
+	 		// then
+	 		assertThat(result, is(1));
+	 		
 		}
 	
 		@Test
 			public void requestInvoiceWitTwoPosition_callCalculateTaxTwice() {
 		
-			Id id = new Id("999");
+			Id id = new Id("1");
 			Money moneyy = new Money(1);
 			
 			ProductType productTypeEveryItem = ProductType.FOOD;
@@ -58,9 +63,9 @@ public class BookKeeperTest {
 			ClientData clientData = new ClientData(id, "Test");
 			when(mockInvoiceFactory.create(clientData)).thenReturn(new Invoice(id, clientData));
 			
-			ProductData productData = new ProductData(id, moneyy,"book", productTypeEveryItem, new Date());
+			ProductData productData = new productDataBuilder().withPrice(1).withProductType(ProductType.FOOD).build();
 			
-			RequestItem requestItem = new RequestItem(productData, 4,moneyy);
+			RequestItem requestItem = new ItemBuilder().withProductData(productData).witTotalCost(1).build();
 			
 			InvoiceRequest invoiceRequest = new InvoiceRequest(clientData);
 			TaxPolicy taxPolicy = mock(TaxPolicy.class);
@@ -85,7 +90,7 @@ public class BookKeeperTest {
 		@Test
 			public void testWithNoPosition_shouldReturnNoPosition() {
 		
-			Id id = new Id("999");
+			Id id = new Id("1");
 			Money money = new Money(1);
 			InvoiceFactory mockInvoiceFactory = mock(InvoiceFactory.class);
 			bookKeeper = new BookKeeper(mockInvoiceFactory);
@@ -106,7 +111,7 @@ public class BookKeeperTest {
 		@Test
 		public void requestInvoiceWitZeroPosition_noCalculateTaxTwice() {
 	
-		Id id = new Id("999");
+		Id id = new Id("1");
 		Money moneyy = new Money(1);
 		
 		ProductType productTypeEveryItem = ProductType.FOOD;
