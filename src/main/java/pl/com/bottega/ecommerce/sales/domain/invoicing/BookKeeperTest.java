@@ -30,7 +30,7 @@ public class BookKeeperTest {
 	 		Money money = new Money(1);
 	 		InvoiceFactory mockInvoiceFactory = mock(InvoiceFactory.class);
 	 		bookKeeper = new BookKeeper(mockInvoiceFactory);
-	 		ClientData clientData = new ClientData(id, "ksiazka");
+	 		ClientData clientData = new databuilder().build();
 	 		when(mockInvoiceFactory.create(clientData)).thenReturn(
 	 				new Invoice(id, clientData));
 	 		InvoiceRequest invoiceRequest = new InvoiceRequest(clientData);
@@ -61,18 +61,21 @@ public class BookKeeperTest {
 			InvoiceFactory mockInvoiceFactory = mock(InvoiceFactory.class);
 			bookKeeper = new BookKeeper(mockInvoiceFactory);
 			ClientData clientData = new ClientData(id, "Test");
-			when(mockInvoiceFactory.create(clientData)).thenReturn(new Invoice(id, clientData));
+			
 			
 			ProductData productData = new productDataBuilder().withPrice(1).withProductType(ProductType.FOOD).build();
 			
 			RequestItem requestItem = new ItemBuilder().withProductData(productData).witTotalCost(1).build();
 			
 			InvoiceRequest invoiceRequest = new InvoiceRequest(clientData);
-			TaxPolicy taxPolicy = mock(TaxPolicy.class);
+			
 						
 			
 			
-			when(taxPolicy.calculateTax(ProductType.FOOD, moneyy)).thenReturn(new Tax(moneyy, "spis"));
+			when( mockInvoiceFactory.create( (ClientData) Mockito.any() ) ).thenReturn( new Invoice( Id.generate() , clientData ) );
+					TaxPolicy taxPolicy = mock( TaxPolicy.class );
+					when( taxPolicy.calculateTax( (ProductType)Mockito.any(), (Money)Mockito.any() ) ).thenReturn( new Tax( new Money( 0 ) , "" ) ); 
+			 
 			
 			
 
@@ -94,7 +97,7 @@ public class BookKeeperTest {
 			Money money = new Money(1);
 			InvoiceFactory mockInvoiceFactory = mock(InvoiceFactory.class);
 			bookKeeper = new BookKeeper(mockInvoiceFactory);
-			ClientData clientData = new ClientData(id, "Test");
+			ClientData clientData = new databuilder().build();
 			when(mockInvoiceFactory.create(clientData)).thenReturn(new Invoice(id, clientData));
 			
 			InvoiceRequest invoiceRequest = new InvoiceRequest(clientData);
@@ -117,7 +120,7 @@ public class BookKeeperTest {
 		ProductType productTypeEveryItem = ProductType.FOOD;
 		InvoiceFactory mockInvoiceFactory = mock(InvoiceFactory.class);
 		bookKeeper = new BookKeeper(mockInvoiceFactory);
-		ClientData clientData = new ClientData(id, "Test");
+		ClientData clientData = new databuilder().build();
 		when(mockInvoiceFactory.create(clientData)).thenReturn(new Invoice(id, clientData));
 		
 		ProductData productData = new ProductData(id, moneyy,"book", productTypeEveryItem, new Date());
