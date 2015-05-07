@@ -37,7 +37,7 @@ public class BookKeeperTest {
 			InvoiceRequest invoiceRequest = new InvoiceRequest(clientData);
 			TaxPolicy taxPolicy = mock(TaxPolicy.class);
 						
-			ProductData productData = new ProductData(id, money, "ksiazka",ProductType.FOOD, new Date());
+			ProductData productData = new productDataBuilder().withPrice(1).withProductType(ProductType.FOOD).build();
 			
 			when(taxPolicy.calculateTax(ProductType.FOOD, money)).thenReturn(new Tax(money, "spis"));
 			
@@ -95,7 +95,7 @@ public class BookKeeperTest {
 			InvoiceRequest invoiceRequest = new InvoiceRequest(clientData);
 			TaxPolicy taxPolicy = mock(TaxPolicy.class);
 						
-			ProductData productData = new ProductData(id, money, "ksiazka",ProductType.FOOD, new Date());
+			ProductData productData = new productDataBuilder().withPrice(1).withProductType(ProductType.FOOD).build();
 			
 		
 
